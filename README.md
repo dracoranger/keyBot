@@ -1,4 +1,4 @@
-# keyBot #
+## keyBot 
 Looks for game keys on discord and stores them to a file
 Specifically, it does it when people call !gib, so it doesn't scan for them across Discord.  
 
