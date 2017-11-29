@@ -15,15 +15,15 @@ Specifically, it does it when people call !gib, so it doesn't scan for them acro
 5. Add the robot to your server  
 
 ##### What it does
-1. On a specific channel (or by pms) people can give it keys (I recommend by PM, and its pretty trivial to make it one or the other)  
+1. By pms people can give the bot keys
 2. It will give those keys to a specific channel  
 3. !keylist prints a list of the keys in storage  
 4. keeps track of old keys in case someone decides to delete them to be a dick  
 
 ##### What it does not do
-1. gives the name of who sent the key   
+1. gives the name of who sent the key, though that should be pretty obvious by who requests the key in the designated file
 2. sets who can get a key by role  
-3. Configuration file  
+3. Generates a configuration file  
 
 ##### Plans for the future
 1. Fix what it does not do to what it does
