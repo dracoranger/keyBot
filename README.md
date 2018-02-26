@@ -8,10 +8,10 @@ Specifically, it does it when people call !gib, so it doesn't scan for them acro
 3. Pip install discord  
 4. create robot.txt  
  4a. add api token  
- 4b. add server  
- 4c. add userlevel (not implemented yet)  
- 4d. add keys storage (csv)  
- 4e. add usedkeys storage (csv)  
+ 4b. add keys storage (csv)  
+ 4c. add usedkeys storage (csv)   
+ 4d. add server  
+ 4e. add userlevel (not implemented yet) 
 5. Add the robot to your server  
 
 ##### What it does
