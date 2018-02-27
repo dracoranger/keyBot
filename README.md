@@ -10,10 +10,10 @@ Specifically, it does it when people call !gib, so it doesn't scan for them acro
  4a. add api token  
  4b. add upper level keys storage (csv)  
  4c. add lower level keys storage (csv)  
- 4d. add usedkeys storage (csv)   
+ 4d. add usedkeys storage (csv)  
  4e. add upper server  
  4f. add lower server  
- 4g. add time to move from upper to lower 
+ 4g. add time to move from upper to lower  
  4h. add userlevel (not implemented yet)  
 5. Add the robot to your server   
 
