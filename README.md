@@ -12,10 +12,10 @@ Specifically, it does it when people call !gib, so it doesn't scan for them acro
  4c. add lower level keys storage (csv)  
  4d. add usedkeys storage (csv)   
  4e. add upper server  
- 4f. add lower server
- 4g. add time to move from upper to lower
- 4h. add userlevel (not implemented yet) 
-5. Add the robot to your server  
+ 4f. add lower server  
+ 4g. add time to move from upper to lower 
+ 4h. add userlevel (not implemented yet)  
+5. Add the robot to your server   
 
 ##### What it does
 1. By pms, people can give the bot keys
