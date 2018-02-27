@@ -13,9 +13,9 @@ from discord.ext import commands
 client = discord.Client()
 bot = commands.Bot(command_prefix="!", description="")
 
-BOT_FOLDER=""
+BOT_FOLDER = ""
 
-config = open('botData.txt','r')
+config = open('botData.txt', 'r')
 conf = config.readlines() #push to array or do directly
 token = conf[0][:-1]
 keysNameHigher = conf[1][:-1]
@@ -26,7 +26,9 @@ channelNumLower = conf[5][:-1]
 timeToDecrease = float(conf[6][:-1])
 userComp = conf[7][:-1]
 secs = 0
-keyTakenToday=[]
+keyTakenToday = []
+keyTakenThisWeek = []
+weeklyCount = 0
 
 def setDelta():
     global secs
@@ -39,7 +41,14 @@ def setDelta():
     secs = delta_t.seconds+1
 
 def day_tick():
+    global keyTakenThisWeek
     global keyTakenToday
+    global weeklyCount
+
+    weeklyCount = weeklyCount + 1
+    if weeklyCount > 6:
+        weeklyCount = 0
+        keyTakenThisWeek = []
     keyTakenToday = []
     keep = []
     remove = []
@@ -90,8 +99,6 @@ def takeKeys(message, keysList, channelNum):
         gib = "Not avalible.  Please tell Draco if this is wrong"
     else:
         publicMessage = message.author.name + " has claimed " + gibPerm.split(',')[0] + ' which was donated by ' + gibPerm.split(',')[2]
-        if channelNum == channelNumHigher:
-            keyTakenToday.append(message.author)
     with open(usedKeys, 'a') as addToUsed:
         addToUsed.write(gibPerm)
     with open(keysList, 'w') as a:
@@ -126,41 +133,59 @@ async def on_message(message):
     keyList = ''
     if message.author == client.user:
         return
-    if message.channel == client.get_channel(channelNumHigher):
-        channelNum = channelNumHigher
-        keyList = keysNameHigher
-    elif message.channel == client.get_channel(channelNumLower):
-        channelNum = channelNumLower
-        keyList = keysNameLower
+    #if message.channel == client.get_channel(channelNumHigher):
+    channelNum = channelNumHigher
+    keyList = keysNameHigher
+    #elif message.channel == client.get_channel(channelNumLower):
+    #    channelNum = channelNumLower
+    #    keyList = keysNameLower
 
     #if message.channel == client.get_channel(channelNum) or message.channel.is_private:
     if message.channel == client.get_channel(channelNum):
         '''
         prints the list of keys
         '''
-        if message.content.startswith('!keylist'):
-            temp = printKeys(keyList)
+        if message.content.startswith('!keylistDaily'):
+            temp = printKeys(keysNameLower)
+            await client.send_message(message.channel, temp)
+        elif message.content.startswith('!keylistWeekly'):
+            temp = printKeys(keysNameHigher)
             await client.send_message(message.channel, temp)
         '''
         prints all commands
         '''
         if message.content.startswith('!help'):
-            keylist = "!keylist = prints a list of games that have keys, works in either server or in pms"
+            keylistDaily = "!keylistDaily = prints a list of the daily games, works in either server or in pms"
+            keylistWeekly = "!keylistWeekly = prints a list of the weekly games, works in either server or in pms"
             gib = "!gib [gameName] [key]= gives a key to the bot, only works in pms"
-            take = "!take [gameName] = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
-            ret = keylist+'\n'+gib+'\n'+take+'\n'
+            takeDaily = "!takeDaily [gameName] = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
+            takeWeekly = "!takeWeekly [gameName] = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
+
+            ret = keylistDaily+'\n'+takeDaily+'\n'+keylistWeekly+'\n'+takeWeekly+'\n'+gib+'\n'
             await client.send_message(message.channel, ret)
         '''
         gives user a key
         '''
         global keyTakenToday
-        if message.content.startswith('!take'):
-            if not message.author in keyTakenToday or channelNum == channelNumLower:
-                temp = takeKeys(message, keyList, channelNum)
+        global keyTakenThisWeek
+        if message.content.startswith('!takeDaily'):
+            #if not message.author in keyTakenToday or channelNum == channelNumLower:
+            if not message.author in keyTakenToday:
+                temp = takeKeys(message, keysNameLower, channelNumLower)
                 await client.send_message(message.author, temp[0])
-                await client.send_message(client.get_channel(channelNum), temp[1])
+                await client.send_message(client.get_channel(channelNumLower), temp[1])
+                keyTakenToday.append(message.author)
             else:
                 await client.send_message(message.author,"Sorry, due to potential security issues, we're limiting the number of keys taken to 1 per day")
+        elif message.content.startswith('!takeWeekly'):
+            #if not message.author in keyTakenToday or channelNum == channelNumLower:
+            if not message.author in keyTakenThisWeek:
+                temp = takeKeys(message, keysNameHigher, channelNumHigher)
+                await client.send_message(message.author, temp[0])
+                await client.send_message(client.get_channel(channelNumLower), temp[1])
+                keyTakenThisWeek.append(message.author)
+            else:
+                await client.send_message(message.author,"Sorry, due to potential security issues, we're limiting the number of keys taken to 1 per week")
     if message.channel.is_private:
         '''
         takes a key from a user
