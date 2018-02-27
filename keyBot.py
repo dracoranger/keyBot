@@ -124,7 +124,7 @@ async def on_ready():
     print('------')
     message = client.user.name + " is up and running!"
     await client.send_message(client.get_channel(channelNumHigher), message)
-    await client.send_message(client.get_channel(channelNumLower), message)
+    #await client.send_message(client.get_channel(channelNumLower), message)
 
 @client.event
 @asyncio.coroutine
