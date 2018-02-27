@@ -79,7 +79,7 @@ t.start()
 def takeKeys(message, keysList, channelNum, usersTakenList):
     global keyTakenToday
     item = message.content.split(' ')[1]
-    print(item)
+    #print(item)
     keys = open(keysList, 'r+')
     keylist = keys.readlines()
     keys.close()
@@ -87,7 +87,7 @@ def takeKeys(message, keysList, channelNum, usersTakenList):
     gib = ''
     gibPerm = ''
     for i in keylist:
-        print(i)
+        #print(i)
         if i.split(',')[0].upper() == item.upper():
             if gib == '':
                 gibPerm = i
