@@ -77,7 +77,7 @@ t = Timer(secs, day_tick)
 t.start()
 
 def takeKeys(message, keysList, usersTakenList):
-    item = message.content.split(' ')[1]
+    item = message.content[message.content.find(' '):]
     #print(item)
     keys = open(keysList, 'r+')
     keylist = keys.readlines()
@@ -85,21 +85,22 @@ def takeKeys(message, keysList, usersTakenList):
     temp = ''
     gib = ''
     gibPerm = ''
-    for i in keylist:
-        #print(i)
-        if i.split(',')[0].upper() == item.upper():
+    for key in keylist:
+        check = key.split(',')[0]
+
+        if check.upper() == item.upper():
             if gib == '':
-                gibPerm = i
-                gib = 'Game: ' + i.split(',')[0:-2]+ ' Key: ' + i.split(',')[-2] + ' Given by: '+ i.split(',')[-1]
+                gibPerm = key
+                gib = 'Game: ' + key.split(',')[0]+ ' Key: ' + key.split(',')[-3] + ' Given by: '+ key.split(',')[-2]
             else:
-                temp = temp+i
+                temp = temp+key
         else:
-            temp = temp+i
+            temp = temp+key
     if gib == '':
         publicMessage = "Item requested is not avalible"
         gib = "Not avalible.  Please tell Draco if this is wrong"
     else:
-        publicMessage = message.author.name + " has claimed " + gibPerm.split(',')[0: -2] + ' which was donated by ' + gibPerm.split(',')[-1]
+        publicMessage = message.author.name + " has claimed " + gibPerm.split(',')[0] + ' which was donated by ' + gibPerm.split(',')[-2]
         usersTakenList.append(message.author)
     with open(usedKeys, 'a') as addToUsed:
         addToUsed.write(gibPerm)
@@ -147,16 +148,16 @@ async def on_message(message):
         '''
         prints the list of keys
         '''
-        if message.content.startswith('!keylistDaily'.upper()):
+        if message.content.startswith('!keylistDaily') or message.content.startswith('!keylistdaily'):
             temp = printKeys(keysNameLower)
             await client.send_message(message.channel, temp)
-        elif message.content.startswith('!keylistWeekly'.upper()):
+        elif message.content.startswith('!keylistWeekly'.upper()) or message.content.startswith('!keylistweekly'):
             temp = printKeys(keysNameHigher)
             await client.send_message(message.channel, temp)
         '''
         prints all commands
         '''
-        if message.content.startswith('!help'.upper()):
+        if message.content.startswith('!help'):
             keylistDaily = "**!keylistDaily** = prints a list of the daily games, works in either server or in pms"
             keylistWeekly = "**!keylistWeekly** = prints a list of the weekly games, works in either server or in pms"
             gib = "**!gib [gameName] [key]**= gives a key to the bot, only works in pms"
@@ -171,7 +172,7 @@ async def on_message(message):
         '''
         global keyTakenToday
         global keyTakenThisWeek
-        if message.content.startswith('!takeDaily'.upper()):
+        if message.content.startswith('!takeDaily') or message.content.startswith('!takedaily'):
             #if not message.author in keyTakenToday or channelNum == channelNumLower:
             if not message.author in keyTakenToday:
                 temp = takeKeys(message, keysNameLower, keyTakenToday)
@@ -180,7 +181,7 @@ async def on_message(message):
 
             else:
                 await client.send_message(message.author,"Sorry, due to potential security issues, we're limiting the number of keys taken to 1 per day")
-        elif message.content.startswith('!takeWeekly'.upper()):
+        elif message.content.startswith('!takeWeekly') or message.content.startswith('!takeweekly'):
             #if not message.author in keyTakenToday or channelNum == channelNumLower:
             if not message.author in keyTakenThisWeek:
                 temp = takeKeys(message, keysNameHigher, keyTakenThisWeek)
@@ -193,7 +194,7 @@ async def on_message(message):
         '''
         takes a key from a user
         '''
-        if message.content.startswith('!gib'.upper()):
+        if message.content.startswith('!gib'):
             item = message.content[4:]
             temp = item.split(' ')
             name = ''
