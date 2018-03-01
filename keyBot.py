@@ -64,8 +64,8 @@ def day_tick():
     r = ''
     for ke in keep:
         k = k + ke
-    for re in remove:
-        r = r + re
+    for rem in remove:
+        r = r + rem
     with open(keysNameHigher, 'w') as keys:
         keys.write(k)
     with open(keysNameLower,'a') as keys:
@@ -76,8 +76,7 @@ setDelta()
 t = Timer(secs, day_tick)
 t.start()
 
-def takeKeys(message, keysList, channelNum, usersTakenList):
-    global keyTakenToday
+def takeKeys(message, keysList, usersTakenList):
     item = message.content.split(' ')[1]
     #print(item)
     keys = open(keysList, 'r+')
@@ -91,7 +90,7 @@ def takeKeys(message, keysList, channelNum, usersTakenList):
         if i.split(',')[0].upper() == item.upper():
             if gib == '':
                 gibPerm = i
-                gib = 'Game: ' + i.split(',')[0]+ ' Key: ' + i.split(',')[1] + ' Given by: '+ i.split(',')[2]
+                gib = 'Game: ' + i.split(',')[0:-2]+ ' Key: ' + i.split(',')[-2] + ' Given by: '+ i.split(',')[-1]
             else:
                 temp = temp+i
         else:
@@ -100,12 +99,12 @@ def takeKeys(message, keysList, channelNum, usersTakenList):
         publicMessage = "Item requested is not avalible"
         gib = "Not avalible.  Please tell Draco if this is wrong"
     else:
-        publicMessage = message.author.name + " has claimed " + gibPerm.split(',')[0] + ' which was donated by ' + gibPerm.split(',')[2]
+        publicMessage = message.author.name + " has claimed " + gibPerm.split(',')[0: -2] + ' which was donated by ' + gibPerm.split(',')[-1]
         usersTakenList.append(message.author)
     with open(usedKeys, 'a') as addToUsed:
         addToUsed.write(gibPerm)
-    with open(keysList, 'w') as a:
-        a.write(temp)
+    with open(keysList, 'w') as remaining:
+        remaining.write(temp)
     return (gib,publicMessage)
 
 
@@ -148,23 +147,23 @@ async def on_message(message):
         '''
         prints the list of keys
         '''
-        if message.content.startswith('!keylistDaily'):
+        if message.content.startswith('!keylistDaily'.upper()):
             temp = printKeys(keysNameLower)
             await client.send_message(message.channel, temp)
-        elif message.content.startswith('!keylistWeekly'):
+        elif message.content.startswith('!keylistWeekly'.upper()):
             temp = printKeys(keysNameHigher)
             await client.send_message(message.channel, temp)
         '''
         prints all commands
         '''
-        if message.content.startswith('!help'):
-            keylistDaily = "!keylistDaily = prints a list of the daily games, works in either server or in pms"
-            keylistWeekly = "!keylistWeekly = prints a list of the weekly games, works in either server or in pms"
-            gib = "!gib [gameName] [key]= gives a key to the bot, only works in pms"
-            takeDaily = "!takeDaily [gameName] = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
-            takeWeekly = "!takeWeekly [gameName] = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
+        if message.content.startswith('!help'.upper()):
+            keylistDaily = "**!keylistDaily** = prints a list of the daily games, works in either server or in pms"
+            keylistWeekly = "**!keylistWeekly** = prints a list of the weekly games, works in either server or in pms"
+            gib = "**!gib [gameName] [key]**= gives a key to the bot, only works in pms"
+            takeDaily = "**!takeDaily [gameName]** = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
+            takeWeekly = "**!takeWeekly [gameName]** = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
 
-            ret = keylistDaily+'\n'+takeDaily+'\n'+keylistWeekly+'\n'+takeWeekly+'\n'+gib+'\n'
+            ret = keylistDaily+'\n'+takeDaily+'\n\n'+keylistWeekly+'\n'+takeWeekly+'\n\n'+gib+'\n'
             await client.send_message(message.channel, ret)
     if message.channel == client.get_channel(channelNum):
         '''
@@ -172,19 +171,19 @@ async def on_message(message):
         '''
         global keyTakenToday
         global keyTakenThisWeek
-        if message.content.startswith('!takeDaily'):
+        if message.content.startswith('!takeDaily'.upper()):
             #if not message.author in keyTakenToday or channelNum == channelNumLower:
             if not message.author in keyTakenToday:
-                temp = takeKeys(message, keysNameLower, channelNumHigher, keyTakenToday)
+                temp = takeKeys(message, keysNameLower, keyTakenToday)
                 await client.send_message(message.author, temp[0])
                 await client.send_message(client.get_channel(channelNumHigher), temp[1])
 
             else:
                 await client.send_message(message.author,"Sorry, due to potential security issues, we're limiting the number of keys taken to 1 per day")
-        elif message.content.startswith('!takeWeekly'):
+        elif message.content.startswith('!takeWeekly'.upper()):
             #if not message.author in keyTakenToday or channelNum == channelNumLower:
             if not message.author in keyTakenThisWeek:
-                temp = takeKeys(message, keysNameHigher, channelNumHigher, keyTakenThisWeek)
+                temp = takeKeys(message, keysNameHigher, keyTakenThisWeek)
                 await client.send_message(message.author, temp[0])
                 await client.send_message(client.get_channel(channelNumHigher), temp[1])
                 #.append(message.author)
@@ -194,16 +193,18 @@ async def on_message(message):
         '''
         takes a key from a user
         '''
-        if message.content.startswith('!gib'):
+        if message.content.startswith('!gib'.upper()):
             item = message.content[4:]
             temp = item.split(' ')
             name = ''
-            comp = re.compile(r'(\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w)|(\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w)')#and third one?
+            comp = re.compile(r'(\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\b|(\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\b)')#and third one?
             co = comp.match(temp[-1])
             if len(temp) > 2 and co:
                 for i in range(0, len(temp)-1):
-                    name = name+temp[i]
-                key = temp[len(temp)-1]
+                    name = name+temp[i] + ' '
+                if len(name) > 75:
+                    name = name[0:75]
+                key = temp[-1]
                 await client.send_message(message.author, "Thank you!\n I recieved "+name+" with a key of "+ key)
                 with open(keysNameHigher, 'a') as keys:
                     keys.write(name + ',' + key + ',' + message.author.name + ',' + str(time.time()) +'\n')
