@@ -77,7 +77,7 @@ t = Timer(secs, day_tick)
 t.start()
 
 def takeKeys(message, keysList, usersTakenList):
-    item = message.content[message.content.find(' '):]
+    item = message.content[message.content.find(' ')+1:]
     #print(item)
     keys = open(keysList, 'r+')
     keylist = keys.readlines()
@@ -87,7 +87,6 @@ def takeKeys(message, keysList, usersTakenList):
     gibPerm = ''
     for key in keylist:
         check = key.split(',')[0]
-
         if check.upper() == item.upper():
             if gib == '':
                 gibPerm = key
@@ -148,18 +147,18 @@ async def on_message(message):
         '''
         prints the list of keys
         '''
-        if message.content.startswith('!keylistDaily') or message.content.startswith('!keylistdaily'):
+        if message.content.startswith('!keysDaily') or message.content.startswith('!keysdaily'):
             temp = printKeys(keysNameLower)
             await client.send_message(message.channel, temp)
-        elif message.content.startswith('!keylistWeekly'.upper()) or message.content.startswith('!keylistweekly'):
+        elif message.content.startswith('!keysWeekly') or message.content.startswith('!keysweekly'):
             temp = printKeys(keysNameHigher)
             await client.send_message(message.channel, temp)
         '''
         prints all commands
         '''
         if message.content.startswith('!help'):
-            keylistDaily = "**!keylistDaily** = prints a list of the daily games, works in either server or in pms"
-            keylistWeekly = "**!keylistWeekly** = prints a list of the weekly games, works in either server or in pms"
+            keylistDaily = "**!keysDaily** = prints a list of the daily games, works in either server or in pms"
+            keylistWeekly = "**!keysWeekly** = prints a list of the weekly games, works in either server or in pms"
             gib = "**!gib [gameName] [key]**= gives a key to the bot, only works in pms"
             takeDaily = "**!takeDaily [gameName]** = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
             takeWeekly = "**!takeWeekly [gameName]** = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
@@ -198,10 +197,10 @@ async def on_message(message):
             item = message.content[4:]
             temp = item.split(' ')
             name = ''
-            comp = re.compile(r'(\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\b|(\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\b)')#and third one?
+            comp = re.compile(r'((\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\b)|(\w\w\w\w\w\-\w\w\w\w\w\-\w\w\w\w\w\b))')#and third one?
             co = comp.match(temp[-1])
             if len(temp) > 2 and co:
-                for i in range(0, len(temp)-1):
+                for i in range(1, len(temp)-1):
                     name = name+temp[i] + ' '
                 if len(name) > 75:
                     name = name[0:75]
