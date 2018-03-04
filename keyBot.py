@@ -202,6 +202,7 @@ async def on_message(message):
             if len(temp) > 2 and co:
                 for i in range(1, len(temp)-1):
                     name = name+temp[i] + ' '
+                name = name[0:-1]
                 if len(name) > 75:
                     name = name[0:75]
                 key = temp[-1]
