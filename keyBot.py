@@ -141,7 +141,7 @@ async def on_message(message):
     #elif message.channel == client.get_channel(channelNumLower):
     #    channelNum = channelNumLower
     #    keyList = keysNameLower
-
+    print(message.channel.is_private)
     if message.channel == client.get_channel(channelNum) or message.channel.is_private:
     #if message.channel == client.get_channel(channelNum):
         '''
@@ -181,6 +181,7 @@ async def on_message(message):
             else:
                 await client.send_message(message.author,"Sorry, due to potential security issues, we're limiting the number of keys taken to 1 per week")
     if message.channel.is_private:
+        print(message.content)
         '''
         prints the list of keys
         '''
