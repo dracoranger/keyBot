@@ -145,11 +145,20 @@ async def on_message(message):
     if message.channel == client.get_channel(channelNum) or message.channel.is_private:
     #if message.channel == client.get_channel(channelNum):
         '''
+        prints the list of keys
+        '''
+        if message.content.startswith('!keysDaily') or message.content.startswith('!keysdaily'):
+            temp = printKeys(keysNameLower)
+            await client.send_message(message.channel, temp)
+        elif message.content.startswith('!keysWeekly') or message.content.startswith('!keysweekly'):
+            temp = printKeys(keysNameHigher)
+            await client.send_message(message.channel, temp)
+        '''
         prints all commands
         '''
         if message.content.startswith('!help'):
-            keylistDaily = "**!keysDaily** = prints a list of the daily games, only works in pms"
-            keylistWeekly = "**!keysWeekly** = prints a list of the weekly games, only works in pms"
+            keylistDaily = "**!keysDaily** = prints a list of the daily games, works in either server or in pms"
+            keylistWeekly = "**!keysWeekly** = prints a list of the weekly games, works in either server or in pms"
             gib = "**!gib [gameName] [key]**= gives a key to the bot, only works in pms"
             takeDaily = "**!takeDaily [gameName]** = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
             takeWeekly = "**!takeWeekly [gameName]** = messages you with the game's key, works only in server, recieve key in pm, message posted to server"
@@ -182,16 +191,6 @@ async def on_message(message):
                 await client.send_message(message.author,"Sorry, due to potential security issues, we're limiting the number of keys taken to 1 per week")
     if message.channel.is_private:
         print(message.content)
-        '''
-        prints the list of keys
-        '''
-        if message.content.startswith('!keysDaily') or message.content.startswith('!keysdaily'):
-            temp = printKeys(keysNameLower)
-            await client.send_message(message.channel, temp)
-        elif message.content.startswith('!keysWeekly') or message.content.startswith('!keysweekly'):
-            temp = printKeys(keysNameHigher)
-            await client.send_message(message.channel, temp)
-
         '''
         takes a key from a user
         '''
