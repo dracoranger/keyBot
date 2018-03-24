@@ -5,7 +5,7 @@ import re
 import time
 from datetime import datetime
 from datetime import timedelta
-from threading import Timer
+from threading import Timer,Thread,Event
 import discord
 from discord.ext import commands
 #import logging
@@ -25,20 +25,29 @@ channelNumHigher = conf[4][:-1]
 channelNumLower = conf[5][:-1]
 timeToDecrease = float(conf[6][:-1])
 userComp = conf[7][:-1]
-secs = 0
+secs = 86400
 keyTakenToday = []
 keyTakenThisWeek = []
 weeklyCount = 0
 
-def setDelta():
-    global secs
-    # from https://stackoverflow.com/questions/15088037/python-script-to-do-something-at-the-same-time-every-day
-    #should clear the keyLimiter
-    x = datetime.today()
-    #y=x.replace(day=x.day+1, hour=1, minute=0, second=0, microsecond=0)
-    y = x + timedelta(days=1)
-    delta_t = y-x
-    secs = delta_t.seconds+1
+#https://stackoverflow.com/questions/12435211/python-threading-timer-repeat-function-every-n-seconds
+class perpetualTimer():
+
+    def __init__(self, t, hFunction):
+        self.t=t
+        self.hFunction = hFunction
+        self.thread = Timer(self.t, self.handle_function)
+
+    def handle_function(self):
+        self.hFunction()
+        self.thread = Timer(self.t, self.handle_function)
+        self.thread.start()
+
+    def start(self):
+        self.thread.start()
+
+    def cancel(self):
+        self.thread.cancel()
 
 def day_tick():
     global keyTakenThisWeek
@@ -66,15 +75,16 @@ def day_tick():
         k = k + ke
     for rem in remove:
         r = r + rem
+    k.sort()
+    r.sort()
     with open(keysNameHigher, 'w') as keys:
         keys.write(k)
     with open(keysNameLower,'a') as keys:
         keys.write(r)
-    setDelta()
 
-setDelta()
-t = Timer(secs, day_tick)
-t.start()
+tim = perpetualTimer(secs,day_tick)
+tim.start()
+
 
 def takeKeys(message, keysList, usersTakenList):
     item = message.content[message.content.find(' ')+1:]
@@ -101,6 +111,7 @@ def takeKeys(message, keysList, usersTakenList):
     else:
         publicMessage = message.author.name + " has claimed " + gibPerm.split(',')[0] + ' which was donated by ' + gibPerm.split(',')[-2]
         usersTakenList.append(message.author)
+    temp.sort()
     with open(usedKeys, 'a') as addToUsed:
         addToUsed.write(gibPerm)
     with open(keysList, 'w') as remaining:
@@ -202,7 +213,8 @@ async def on_message(message):
             co = comp.match(temp[-1])
             if len(temp) > 2 and co:
                 for i in range(1, len(temp)-1):
-                    name = name+temp[i] + ' '
+                    if temp[i] != '':
+                        name = name+temp[i] + ' '
                 name = name[0:-1]
                 if len(name) > 75:
                     name = name[0:75]
