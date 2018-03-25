@@ -25,7 +25,7 @@ channelNumHigher = conf[4][:-1]
 channelNumLower = conf[5][:-1]
 timeToDecrease = float(conf[6][:-1])
 userComp = conf[7][:-1]
-secs = 86400
+secs = 86400 #seconds in a day
 keyTakenToday = []
 keyTakenThisWeek = []
 weeklyCount = 0
@@ -53,11 +53,14 @@ def day_tick():
     global keyTakenThisWeek
     global keyTakenToday
     global weeklyCount
-
+    message = ''
     weeklyCount = weeklyCount + 1
     if weeklyCount > 6:
         weeklyCount = 0
         keyTakenThisWeek = []
+        message = "Weekly and daily reset"
+    else:
+        message = "Daily reset"
     keyTakenToday = []
     keep = []
     remove = []
