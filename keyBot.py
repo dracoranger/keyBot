@@ -84,7 +84,7 @@ def day_tick():
         keys.write(k)
     with open(keysNameLower,'a') as keys:
         keys.write(r)
-    print(str(datetime.datetime.now())+message)
+    print(str(datetime.now())+message)
 
 tim = perpetualTimer(secs,day_tick)
 tim.start()
