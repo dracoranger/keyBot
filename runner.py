@@ -2,7 +2,7 @@ import subprocess
 import datetime
 from threading import Timer,Thread,Event
 
-PROCESS_NAME = 'nohup python3 -u keyBot.py &'
+PROCESS_NAME = 'python3 -u keyBot.py'
 
 bot = ''
 
