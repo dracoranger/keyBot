@@ -136,7 +136,7 @@ def printKeys(keysList):
 @client.event
 async def on_ready():
     print('Logged in as ' + client.user.name)
-    #print(client.user.id)
+    print(str(datetime.now()))
     print('------')
     message = client.user.name + " is up and running!"
     await client.send_message(client.get_channel(channelNumHigher), message)
