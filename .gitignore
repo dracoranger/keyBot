@@ -101,5 +101,5 @@ ENV/
 .mypy_cache/
 
 
-.txt
-.csv
+*.txt
+*.csv

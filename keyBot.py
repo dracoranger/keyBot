@@ -200,10 +200,40 @@ async def on_message(message):
         '''
         if message.content.startswith('!keysDaily') or message.content.startswith('!keysdaily'):
             temp = printKeys(keysNameLower)
-            await client.send_message(message.channel, temp)
+            if len(temp[0]) > 1999:
+                keys = []
+                curr = ''
+                num = 0
+                for i in temp:
+                    curr = curr + i
+                    num = num + 1
+                    if num > 1500:
+                        if i == '\n':
+                            keys.append(curr)
+                            curr = ''
+                            num = 0
+                for i in keys:
+                    await client.send_message(message.channel, i)
+            else:
+                await client.send_message(message.channel, temp)
         elif message.content.startswith('!keysWeekly') or message.content.startswith('!keysweekly'):
             temp = printKeys(keysNameHigher)
-            await client.send_message(message.channel, temp)
+            if len(temp[0]) > 1999:
+                keys = []
+                curr = ''
+                num = 0
+                for i in temp:
+                    curr = curr + i
+                    num = num + 1
+                    if num > 1500:
+                        if i == '\n':
+                            keys.append(curr)
+                            curr = ''
+                            num = 0
+                for i in keys:
+                    await client.send_message(message.channel, i)
+            else:
+                await client.send_message(message.channel, temp)
         '''
         takes a key from a user
         '''
