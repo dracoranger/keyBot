@@ -3,7 +3,8 @@ import datetime
 from threading import Timer,Thread,Event
 
 PROCESS_NAME = 'nohup python3 -u keyBot.py &'
-bot
+
+bot = ''
 
 class perpetualTimer():
 
@@ -46,5 +47,7 @@ def check_input(expected, received):
 def main():
     global bot
     bot = create_child_gen(PROCESS_NAME)
-    tim = perpetualTimer(3600,looper)
+    tim = perpetualTimer(3600, looper)
     tim.start()
+
+main()
